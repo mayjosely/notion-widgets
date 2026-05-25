@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Like</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Georgia', serif;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+    padding: 12px;
+  }
+  .wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: 50px;
+    border: 1.5px solid #E8A87C;
+    background: #FFF8F4;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    color: #B05A2A;
+    transition: all 0.18s ease;
+    user-select: none;
+    letter-spacing: 0.02em;
+  }
+  .btn:hover { background: #FDEEDE; border-color: #C06030; transform: scale(1.05); }
+  .btn:active { transform: scale(0.97); }
+  .btn.liked { background: #F4845F; border-color: #D95F30; color: #fff; }
+  .thumb { font-size: 18px; transition: transform 0.3s; display: inline-block; }
+  .liked .thumb { transform: translateY(-2px); }
+  .info { font-size: 13px; color: #999; }
+  .info b { color: #B05A2A; }
+  .liked-info b { color: #F4845F; }
+  .msg {
+    font-size: 13px;
+    color: #C06030;
+    opacity: 0;
+    transition: opacity 0.4s;
+    white-space: nowrap;
+  }
+  .msg.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <button class="btn" id="btn" onclick="handleLike()">
+    <span class="thumb" id="thumb">👍</span>
+    <span id="label">觉得有用</span>
+  </button>
+  <div>
+    <div class="info" id="info">已有 <b id="count">0</b> 人觉得有用</div>
+    <div class="msg" id="msg">谢谢你！真的很开心 ❤️</div>
+  </div>
+</div>
+<script>
+  const KEY = 'notion_like_mayjosely';
+  let count = parseInt(localStorage.getItem(KEY + '_count') || '0');
+  let liked = localStorage.getItem(KEY + '_liked') === '1';
+
+  const btn = document.getElementById('btn');
+  const label = document.getElementById('label');
+  const countEl = document.getElementById('count');
+  const msg = document.getElementById('msg');
+  const info = document.getElementById('info');
+
+  function render() {
+    countEl.textContent = count;
+    if (liked) {
+      btn.classList.add('liked');
+      label.textContent = '已点赞';
+      msg.classList.add('show');
+      info.classList.add('liked-info');
+    } else {
+      btn.classList.remove('liked');
+      label.textContent = '觉得有用';
+      msg.classList.remove('show');
+      info.classList.remove('liked-info');
+    }
+  }
+
+  function handleLike() {
+    if (!liked) {
+      liked = true;
+      count++;
+    } else {
+      liked = false;
+      count--;
+    }
+    localStorage.setItem(KEY + '_liked', liked ? '1' : '0');
+    localStorage.setItem(KEY + '_count', count);
+    render();
+  }
+
+  render();
+</script>
+</body>
+</html>
